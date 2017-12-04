@@ -1,8 +1,3 @@
-"""
-aa bb cc dd ee is valid.
-aa bb cc dd aa is not valid - the word aa appears more than once.
-aa bb cc dd aaa is valid -
-"""
 
 input = """oaoe rxeq vssdqtu xrk cjv yaoqp loo
 mveua dogbam szydvri hyzk lbega abzqw xwjn wniug kwbre
@@ -522,28 +517,19 @@ def anagram(words):
     words_c = words[:]
     valid = True
     for word in words:
-
-        letters = [l for l in word]
         words_c.remove(word)
         for word_c in words_c:
-            if len(word) == len(word_c):
-                for l in letters:
-                    word_c = word_c.replace(l, '_', 1)
-
-                if all(item == '_' for item in word_c):
-                    valid = False
+            if sorted(word) == sorted(word_c):
+                valid = False
     return valid
 
 
 def do_work(input, ag=False):
     counter = 0
-    items = input.split('\n')
-    for item in items:
-        x = item.split()
-        x = [i.strip() for i in x]
+    for item in input.split('\n'):
+        x = [i.strip() for i in item.split()]
         if ag:
             if anagram(x):
-                print(x)
                 counter += 1
         else:
             if len(x) == len(set(x)):
@@ -551,8 +537,9 @@ def do_work(input, ag=False):
 
     return counter
 
-# not 385 or 436 or 334
-print("Part One: ", do_work(input))
-print("Part Two: ", do_work(input, ag=True))
+
+if __name__ == "__main__":
+    print("Part One: ", do_work(input))
+    print("Part Two: ", do_work(input, ag=True))
 
 
