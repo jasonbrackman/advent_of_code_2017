@@ -94,7 +94,6 @@ def get_direction(rows):
                     if top_row_length > bot_row_length:
                         return DOWN
 
-                    return DOWN
                 else:
                     return DOWN
 
@@ -200,13 +199,6 @@ def count_steps(number, plus=0):
     return False
 
 
-def count_steps_with_padding(number):
-    for index in range(100):
-        test = count_steps(number, plus=index)
-        if test is not False:
-            return test
-
-
 def not_sure(number):
     old_rows = build_spiral(number)
     new_rows = [['0' for _ in row] for row in old_rows]
@@ -228,14 +220,14 @@ def not_sure(number):
                 return item
 
 
-print("Part 1: ", count_steps(265149, plus=76))
-print("Part 2: ", not_sure(64))
+if __name__ == "__main__":
+    print("Part 1: ", count_steps(265149, plus=76))
+    print("Part 2: ", not_sure(64))
 
 
 
-# print(count_steps_with_padding(265149))
-# for row in build_spiral(23):
-#     for x in row:
-#         print('{:03} '.format(int(x)), end='')
-#     print("\n")
-#     #print(row)
+    # for row in build_spiral(23):
+    #     for x in row:
+    #         print('{:03} '.format(int(x)), end='')
+    #     print("\n")
+    #     #print(row)
