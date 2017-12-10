@@ -64,36 +64,33 @@ def sparse_hash(data, rounds=1, suffix=None):
     return hash
 
 
-def dense_hash(hash):
+def dense_hash(hash, block_size=16):
     """
-    Takes in a sparse hash and xors all numbers in groups of 16
-    - a 256 length sparse hash will generate a 16 numbered array.
+    Takes in a sparse hash and xors all numbers in groups of 'block_size'
+    - a 256 length sparse hash will generate a 'block_size' numbered array.
     :param hash:
+    :param block_size: int() size of each block
     :return:
     """
     results = list()
-    for index in range(0, len(hash), 16):
+    for index in range(0, len(hash), block_size):
+
+        block = hash[index:index+block_size]
+
         total = 0
-        list_01 = hash[index:index+16]
-        for i in list_01:
+        for i in block:
             total ^= i
+
         results.append(total)
 
     return results
 
-# will break if the hash is incorrectly calculating
-assert dense_hash([65, 27, 9, 1, 4, 3, 40, 50, 91, 7, 6, 0, 2, 5, 68, 22]) == [64]
-# print("hex Vaues: ", [hex(x).replace('0x', '') for x in [64, 7, 255]])
-
-
-def part_one():
-    instructions = [199, 0, 255, 136, 174, 254, 227, 16, 51, 85, 1, 2, 22, 17, 7, 192]
-    output = sparse_hash(instructions, rounds=1)
-    answer = output[0] * output[1]
-    print("Part One: ", answer)
-    assert answer == 3770
 
 def tests():
+    # will break if the hash is incorrectly calculating
+    assert dense_hash([65, 27, 9, 1, 4, 3, 40, 50, 91, 7, 6, 0, 2, 5, 68, 22]) == [64]
+
+    # assert on broken hash results
     for item, expect in zip(('', 'AoC 2017', '1,2,3', '1,2,4'), ('a2582a3a0e66e6e86e3812dcb672a272',
                                                                  '33efeb34ea91902bb2f59c9920caa6cd',
                                                                  '3efbe78a8d82f29979031a4aa0b16a9d',
@@ -107,14 +104,17 @@ def tests():
 if __name__ == "__main__":
     tests()
 
-    # Part 1
-    part_one()
-
     # Part 2
-    instructions = '199,0,255,136,174,254,227,16,51,85,1,2,22,17,7,192'
-    instructions = [ord(x) for x in instructions]
-    output = sparse_hash(instructions, rounds=64, suffix=[17, 31, 73, 47, 23])
+    with open(r'./input/day_10.txt', 'rt') as handle:
+        instructions = handle.read()
 
-    # get dense hash and convert it to hex in a length of 32characters
-    final_hash = ''.join('{:x}'.format(x) for x in dense_hash(output))
-    print("Part Two - dense hash: ", final_hash)
+        # Part One:
+        output = sparse_hash([int(x) for x in instructions.split(',')], rounds=1)
+        answer = output[0] * output[1]
+        print("Part One: ", answer)  # expecting 3770
+
+        # Part Two:
+        instructions = [ord(x) for x in instructions]
+        output = sparse_hash(instructions, rounds=64, suffix=[17, 31, 73, 47, 23])
+        final_hash = ''.join('{:x}'.format(x) for x in dense_hash(output))
+        print("Part Two - dense hash: ", final_hash)
