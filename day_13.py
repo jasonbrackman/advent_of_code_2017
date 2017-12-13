@@ -8,6 +8,7 @@ SCAN = ['s']
 def picosecond(stuff, preroll=0):
     for k, v in stuff.items():
         result = preroll + k % (2 * (len(v) - 1)) == 0
+
         if result:
             v[0] = SCAN
         else:
@@ -41,10 +42,11 @@ def get_caught_number(stuff, preroll=0):
                 caught += key * len(stuff[key])
                 if preroll > 0:
                     return 100
-        print(stuff)
-        picosecond(stuff, preroll=0)
+        # print(stuff)
+        stuff = picosecond(stuff, preroll=0)
 
     return caught
+
 
 def setup_buckets(test):
     buckets = dict()
@@ -58,31 +60,51 @@ def setup_buckets(test):
     return buckets
 
 
+def revamp_counter(d):
+    delay = 0
+    keep_going = 999
+    while keep_going > 1:
+        keep_going = 1
+        for tick in range(max(d.keys()) + 1):
+            if tick in d.keys():
+                offset = (tick + delay) % (2 * (len(d[tick]) - 1))
+                if offset == 0:  # top of stack
+                    if offset % 5000 == 0:
+                        print("STILL WORKING: ", delay)
+                    # print('Key [{}] in step [{}] got hit'.format(tick, delay))
+                    keep_going += 1
+        if keep_going == 1:
+            break
+        delay += 1
+
+    return delay
+
+
 if __name__ == "__main__":
 
     test = """0: 3
     1: 2
     4: 4
     6: 4"""
-    # with open(r'./input/day_13.txt', 'rt') as handle:
-    #     test = handle.read()
+    with open(r'./input/day_13.txt', 'rt') as handle:
+        test = handle.read()
     buckets = setup_buckets(test)
 
     print("Part One: ", get_caught_number(copy.deepcopy(buckets)))
-
-    increase = 1  # 6000
-    while True:
-        result = get_caught_number(copy.deepcopy(buckets), preroll=increase)
-        print(result)
-        if result == 0:
-            print("Part Two: ", increase)
-            break
-        else:
-            if increase % 500 == 0:
-                pass
-                # print(increase)
-            increase += 1
-
-
-
-
+    print("Part Two: ", revamp_counter(copy.deepcopy(buckets)))
+    # increase = 1  # 6000
+    # while True:
+    #     result = get_caught_number(copy.deepcopy(buckets), preroll=increase)
+    #     if result == 0:
+    #         print("Part Two: ", increase)
+    #         break
+    #     else:
+    #         if increase % 500 == 0:
+    #             pass
+    #             # print(increase)
+    #         increase += 1
+    #         break
+    #
+    #
+    #
+    #
