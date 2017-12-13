@@ -1,11 +1,27 @@
+# Not mine but so .... much ... cleaner:
+#
+# def create_connections_(lines, looking_for):
+#     connections = get_connections(lines)
+#
+#     queue = [looking_for]
+#     pipes = set()
+#     while queue:
+#         a = queue.pop()
+#         for b in connections[a]:
+#             if b not in pipes:
+#                 pipes.add(b)
+#                 queue.append(b)
+#
+#     return pipes
+
 
 def get_connections(lines):
-    connections = dict()
+    graphs = dict()
     for line in lines:
         pipe, _, *array = line.split(' ')
         array = [int(item.strip(', ')) for item in array]
-        connections[int(pipe)] = array
-    return connections
+        graphs[int(pipe)] = array
+    return graphs
 
 
 def create_connections(lines, looking_for):
