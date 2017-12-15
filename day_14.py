@@ -12,16 +12,13 @@ def create_hashes(hash='oundnydw'):
 
     return results
 
-def convert_hex_to_bin(hash):
-    return binascii.unhexlify(hash)
-
 
 def part_one():
     results = create_hashes()
     count = 0
     for result in results:
         count += str(bin(int(result, 16))[2:]).count('1')
-    print(count)
+    return count
 
 
 def write_out_input():
@@ -34,8 +31,41 @@ def write_out_input():
             handle.write(line + '\n')
 
 
+def check_horizontal(regions):
+    collect = list()
+    for j in range(len(regions) - 1):
+        z = regions[j-1] if j > 0 else None
+        a = regions[j]
+        b = regions[j + 1]
+
+        if isinstance(a, int):
+            item = min(t for t in (z,a,b) if isinstance(t, int))
+            collect.append(item)
+        else:
+            collect.append(a)
+
+    collect.append(regions[-1])
+
+    return collect
+
+
+def rotate_and_clean(results):
+    final = []
+    for index in range(128):
+        vertical = [line[index] for line in results]
+        for _ in range(10):
+            vertical = check_horizontal(vertical)
+        final.append(vertical)
+    final2 = []
+    for index in range(128):
+        horizontal = [line[index] for line in final]
+        for _ in range(10):
+            horizontal = check_horizontal(horizontal)
+        final2.append(horizontal)
+    return final2
+
 if __name__ == "__main__":
-    # part_one()
+    # print("Part One: ", part_one())  # 8106
     # write_out_input()
 
     with open(r'./input/day_14.txt', 'rt') as handle:
@@ -81,15 +111,48 @@ if __name__ == "__main__":
                     new_line.append('-')
                     go = False
 
-        print('{:02}'.format(index), end=': ')
-        [print(str(x).rjust(4, '-'), end='|') for x in new_line]
-        print()
+        for _ in range(20):
+            new_line = check_horizontal(new_line)
+
+        # print('{:02}'.format(index), end=': ')
+        # [print(str(x).rjust(4, '-'), end='|') for x in new_line]
+        # print()
         # [print(str(x).rjust(2, ' '), end='|') for x in result.strip()]
+
         results.append(new_line)
 
-    for line in results:
-        print(line)
-    print(counter)
+
+    final2 = rotate_and_clean(results)
+    col_correction = list()
+    for col in range(128):
+        for row in range(128):
+            col_correction.append(final2[col][row])
+    c = ','.join(str(x) for x in col_correction)
+    x = c.split('-')
+
+    rebuild = list()
+    for thing in x:
+        test = [int(x) for x in thing if x != ',' and len(x) > 0]
+        print(test)
+
+        for t in test:
+            print(t)
+            if len(t) == 0:
+                rebuild.append('-')
+            else:
+                for item in test:
+                    rebuild.append(min(test))
+
+    for _ in range(0, 128*128, 128):
+        print(rebuild[_:_+128])
+
+
+
+    # print("\n")
+    # for item in final2:
+    #     [print(str(x).rjust(4, '-'), end='|') for x in item]
+    #     print()
+    # print(counter)
 
 # Not 2072
 

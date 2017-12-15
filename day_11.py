@@ -5,12 +5,12 @@
 #  If I ever come back to this:
 #  https://www.redblobgames.com/grids/hexagons/
 # row, col
-moves = {'s': [-1, 0],
-         'n': [1, 0],
-         'ne': [1, 1],
-         'nw': [1, -1],
-         'se': [-1, 1],
-         'sw': [-1, -1]}
+moves = {'n': [0, -1],
+         'ne': [1, -1],
+         'nw': [-1, -1],
+         's': [0, 1],
+         'se': [1, 0],
+         'sw': [-1, 0]}
 
 
 def test_stuff():
@@ -24,14 +24,14 @@ def test_stuff():
 
 def get_distance_away(directions):
     total = [0, 0]
-    max_distance_achieved = []
+    max_distance = []
     for item in directions:
         total[0] += moves[item][0]
         total[1] += moves[item][1]
 
-        max_distance_achieved.append(max(total))
+        max_distance.append(max(total))
 
-    return total, max_distance_achieved
+    return total, max_distance
 
 
 if __name__ == "__main__":
