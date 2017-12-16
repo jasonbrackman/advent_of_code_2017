@@ -5,7 +5,6 @@ import itertools
 def spin(text, index):
     start = text[0:-(index)]
     end = text[-(index):]
-
     return end + start
 
 
@@ -48,12 +47,12 @@ def find_wrap_around(text, rules, repeat=1_000_000_000):
 
         if text == compare:
             mod = repeat % (index+1)
-            return cache[mod-1] # ejkflpgnamhdcboi
+            return cache[mod-1]
 
 
 if __name__ == "__main__":
+
     letters = string.ascii_lowercase[0:16]
-    rules = {letter: index for index, letter in enumerate(letters)}
 
     with open(r'./input/day_16.txt', 'rt') as handle:
         rules = handle.read().split(",")
