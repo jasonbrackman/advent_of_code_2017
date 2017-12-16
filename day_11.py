@@ -4,6 +4,7 @@
 #         totally screwy.
 #  If I ever come back to this:
 #  https://www.redblobgames.com/grids/hexagons/
+#  https://www.gamasutra.com/blogs/HermanTulleken/20140912/225495/20_Fun_Grid_Facts_Hex_Grids.php
 # row, col
 moves = {'n': [0, -1],
          'ne': [1, -1],

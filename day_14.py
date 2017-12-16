@@ -64,6 +64,7 @@ def rotate_and_clean(results):
         final2.append(horizontal)
     return final2
 
+
 if __name__ == "__main__":
     # print("Part One: ", part_one())  # 8106
     # write_out_input()
@@ -125,34 +126,66 @@ if __name__ == "__main__":
     final2 = rotate_and_clean(results)
     col_correction = list()
     for col in range(128):
+        line = list()
         for row in range(128):
-            col_correction.append(final2[col][row])
-    c = ','.join(str(x) for x in col_correction)
-    x = c.split('-')
+            line.append(final2[row][col])
+        col_correction.append(line[:])
+        line.clear()
 
-    rebuild = list()
-    for thing in x:
-        test = [int(x) for x in thing if x != ',' and len(x) > 0]
-        print(test)
+    # c = ','.join(str(x) for x in col_correction)
+    # final_split = c.split('-')
+    #
+    # rebuild = list()
+    # for thing in final_split:
+    #     # print(thing)
+    #     if len(thing) == 0 or thing == ',':
+    #         rebuild.append('-')
+    #     else:
+    #         m = min([int(x) for x in thing.split(',') if x != ''])
+    #         for item in thing:
+    #             if item == ',':
+    #                 pass
+    #             else:
+    #                 rebuild.append(m)
+    #
+    # for _ in range(0, 128*128, 128):
+    #     print('--> ', rebuild[_:_+128])
 
-        for t in test:
-            print(t)
-            if len(t) == 0:
-                rebuild.append('-')
+    print("\n")
+    rebuild = []
+    for item in col_correction:
+        print(item)
+        line = []
+
+        collector = []
+        temp = []
+        last = None
+        for component in item:
+            if component != last:
+                if len(temp) > 0:
+                    if temp[0] != '-':
+                        x = [min(temp) for i in temp]
+                        if x != temp:
+                            print("PROBLEM FOUND: ", temp)
+                        temp = [min(temp) for i in temp]
+                    collector.append(temp[:])
+                temp.clear()
+                temp.append(component)
+                last = component
             else:
-                for item in test:
-                    rebuild.append(min(test))
+                temp.append(component)
 
-    for _ in range(0, 128*128, 128):
-        print(rebuild[_:_+128])
+        smaller = (collect for collect in collector if not None)
+        for small in smaller:
+            print(small)
 
 
+    print("\n")
+    for item in final2:
+        [print(str(x).rjust(4, '-'), end='|') for x in item]
+        print()
+    print(counter)
 
-    # print("\n")
-    # for item in final2:
-    #     [print(str(x).rjust(4, '-'), end='|') for x in item]
-    #     print()
-    # print(counter)
 
 # Not 2072
 
