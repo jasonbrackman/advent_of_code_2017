@@ -64,18 +64,18 @@ def sparse_hash(data, rounds=1, suffix=None):
     return hash
 
 
-def dense_hash(hash, block_size=16):
+def dense_hash(hash_, block_size=16):
     """
     Takes in a sparse hash and xors all numbers in groups of 'block_size'
     - a 256 length sparse hash will generate a 'block_size' numbered array.
-    :param hash:
+    :param hash_:
     :param block_size: int() size of each block
     :return:
     """
     results = list()
-    for index in range(0, len(hash), block_size):
+    for index in range(0, len(hash_), block_size):
 
-        block = hash[index:index+block_size]
+        block = hash_[index:index + block_size]
 
         total = 0
         for i in block:

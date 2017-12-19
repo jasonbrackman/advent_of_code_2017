@@ -27,8 +27,6 @@ def get_input():
 program0 = []
 program1 = []
 
-prog0 = dict()
-prog1 = dict()
 
 
 def is_digit(n):
@@ -101,7 +99,8 @@ def do_instructions2(pid, p1, p0, input):
             registers[vars[0]] = arg2
 
         elif cmd == 'jgz':
-            if registers[vars[0]] > 0:
+            arg1 = int(vars[0]) if is_digit(vars[0]) else registers[vars[0]]
+            if arg1 > 0:
                 current_instruction += arg2
                 # print("Current instruction: ", current_instruction)
                 continue
@@ -112,22 +111,25 @@ def do_instructions2(pid, p1, p0, input):
             count += 1
 
         elif cmd == 'rcv':
-            while len(p1) == 0 and p0 is not None:
+
+            while len(p1) == 0:
                 print("[{}] Waiting...".format(pid))
                 yield
-                time.sleep(0.1)
+                if len(p1) == 0 and len(p0) == 0:
+                    print("[{}] Deadlock".format(pid))
+                    break
+                    return
+                # time.sleep(0.1)
 
-            if len(p1) == 0 and p0 is None:
-                print("[{}] Deadlock".format(pid))
-                1 / 0
-
-            x = p1.pop(0)
+            x = p1.pop(0)  # FIFO
             registers[vars[0]] = x
+            print("[{}] CMD: {} {} (length of queue: {})".format(pid, cmd, vars, len(p1)))
             print("[{}] Received: {}".format(pid, x), 'Count:', count)  # 256/257 is too low
 
             yield
 
         current_instruction += 1
+
     p1 = None
     print("Exiting:", pid, "after sending:", count, "items")
 
@@ -150,6 +152,7 @@ def do_stuff(pid, p1, p0):
         cmd, *vars = item.split()
         print(cmd, vars)
         if cmd == 'snd':
+            print()
             p0.append(registers[vars[0]])
             count += 1
             print(pid, p0)
@@ -178,15 +181,15 @@ if __name__ == "__main__":
     instructions = [item for item in input]
     print("Part One: ", do_instructions(instructions))  # 7071
 
-    # a = do_instructions2(0, program1, program0, instructions)
-    # b = do_instructions2(1, program0, program1, instructions)
+    a = do_instructions2(0, program1, program0, instructions)
+    b = do_instructions2(1, program0, program1, instructions)
+    while True:
+        next(a)
+        next(b)
+
+    # a = do_stuff(0, program1, program0)
+    # b = do_stuff(1, program0, program1)
+    #
     # while True:
     #     next(a)
     #     next(b)
-
-    a = do_stuff(0, program1, program0)
-    b = do_stuff(1, program0, program1)
-
-    for _ in range(10):
-        next(a)
-        next(b)
