@@ -1,6 +1,4 @@
 
-import itertools
-
 import collections
 
 
@@ -91,7 +89,7 @@ if __name__ == "__main__":
     part_one()
 
     buffer = get_buffer()
-    print(len(buffer))
+
     for tick in range(len(buffer)):
         buffer = update_particles(buffer)
 
