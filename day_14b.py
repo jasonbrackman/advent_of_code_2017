@@ -1,19 +1,20 @@
-class QuickFindUF:
+class QuickUnionUF:
 
-    def __init__(self, n):
-        """Constructor"""
+    def __init__(self, n: int):
         self.id = [index for index in range(n)]
 
+    def root(self, i: int):
+        while i != self.id[i]:
+            i = self.id[i]
+        return i
+
     def connected(self, p: int, q: int):
-        return self.id[p] == self.id[q]
+        return self.root(p) == self.root(q)
 
     def union(self, p: int, q: int):
-        pid = self.id[p]
-        qid = self.id[q]
-
-        for index in range(len(self.id)):
-            if self.id[index] == pid:
-                self.id[index] = qid
+        i = self.root(p)
+        j = self.root(q)
+        self.id[i] = j
 
 
 def get_data():
@@ -29,7 +30,7 @@ def main():
     x = len(lines[0])
     y = len(lines)
 
-    qf = QuickFindUF(x*y)
+    qf = QuickUnionUF(x*y)
     for idx in range(x):
         for idy in range(y):
             id_ = idx * x + idy
@@ -56,4 +57,4 @@ def main():
 
 if __name__ == "__main__":
     qf = main()
-    print("Part Two: ", len(set(qf.id))-1)
+    print("Part Two: ", len(set([qf.root(index) for index in range(128*128)])) - 1)
