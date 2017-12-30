@@ -27,12 +27,15 @@ class Node:
         a, b = self.location
         c, d = self.DIRECTIONS[self.facing % len(self.DIRECTIONS)]
         self.location = ((a + c), (b + d))
-
+        # print('loc:', self.location)
 
 
 class Grid:
-    INFECTED = '#'
     CLEAN = '.'
+    WEAKENED = 'W'
+    INFECTED = '#'
+    FLAGGED = 'F'
+    STATES = [CLEAN, WEAKENED, INFECTED, FLAGGED]
 
     grid = dict()
     grid_size = 0
@@ -53,7 +56,8 @@ class Grid:
                 self.grid[(row-center, col-center)] = character
 
     def pprint(self):
-
+        # print("GRID SIZE:", self.grid_size)
+        # print(self.carrier.location)
         original = self.grid[self.carrier.location]
         temp = f'[{original}]'
         self.grid[self.carrier.location] = temp
@@ -63,41 +67,55 @@ class Grid:
         for x in range(0, self.grid_size):
             container.append([])
             for y in range(0, self.grid_size):
-                container[x].append(self.grid.get((x-center, y-center), '.'))
+                container[x].append(self.grid.get((x-center, y-center), self.CLEAN))
 
         for line in container:
             print("".join(x.center(3) for x in line))
-            print()
 
         self.grid[self.carrier.location] = original
 
     def burst(self):
 
         position = self.carrier.location
-
-        # In place direction turn
-        if self.grid[position] == self.INFECTED:
-            self.carrier.change_direction(self.carrier.RIGHT)
-        else:
-            self.carrier.change_direction(self.carrier.LEFT)
-
-        # Clean or infect grid position
-        if self.grid[position] != self.INFECTED:
-            self.infection_counter += 1
-        self.grid[position] = '.' if self.grid[position] == self.INFECTED else '#'
+        self.update_carrier_direction(position)
+        self.update_position_state(position)
 
         # finally move the carrier forward in its current direction
         self.carrier.move()
-        if self.carrier.location not in self.grid:
+        a, b = self.carrier.location
+        if abs(a) >= self.grid_size-1 or abs(b) >= self.grid_size-1:
             self.grid_size += 1
+        if self.carrier.location not in self.grid:
             self.grid[self.carrier.location] = self.CLEAN
+
+    def update_carrier_direction(self, position):
+        grid_state = self.grid[position]
+
+        if grid_state == self.INFECTED:
+            self.carrier.change_direction(self.carrier.RIGHT)
+
+        elif grid_state == self.CLEAN:
+            self.carrier.change_direction(self.carrier.LEFT)
+
+        elif grid_state == self.FLAGGED:
+            self.carrier.change_direction(self.carrier.RIGHT)
+            self.carrier.change_direction(self.carrier.RIGHT)
+
+    def update_position_state(self, position):
+        current_state = self.grid[position]
+        index = self.STATES.index(current_state)
+        new_state = self.STATES[(index+1) % len(self.STATES)]
+        if new_state == self.INFECTED:
+            self.infection_counter += 1
+
+        # print(current_state, '->', new_state)
+        self.grid[position] = new_state
 
 
 if __name__ == "__main__":
     grid = Grid()
-    # grid.pprint()
-    # print("--")
-    for _ in range(10000):
+
+    for _ in range(10000000):
         grid.burst()
     grid.pprint()
     print(grid.infection_counter)
