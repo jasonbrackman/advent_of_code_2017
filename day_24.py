@@ -44,13 +44,16 @@ if __name__ == "__main__":
     links = get_input()
     nested = test(links, input='0')
 
+    lengths = list()
     sums = list()
     for nest in nested:
         flattened = [int(i) for n in nest for i in n]
+        lengths.append(flattened)
         r = sum(flattened)
         # if r > 1911:        # 1911 is too low
         #     print(r, nest)
         sums.append(r)
-    print(max(sums))  # 2006
 
+    print("Part One:", max(sums))  # 2006
+    print("Part Two:", sum(sorted(lengths, key=len)[-1]))  # 1994
 
