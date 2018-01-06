@@ -11,22 +11,15 @@
 #
 # --------------------------------------------------------------------------------------
 
-from itertools import cycle
-
 
 def captcha(number):
     characters = [character for character in str(number)]
     if len(characters) == 1 or len(characters) == len(set(characters)):
         return 0
-    else:
-        offset = characters[1:] + [characters[0]]
-        keepers = list()
 
-        for a, b in zip(characters, offset):
-            if a == b:
-                keepers.append(int(a))
-
-        return sum(keepers)
+    offset = characters[1:] + [characters[0]]
+    keepers = [int(a) for a, b in zip(characters, offset) if a == b]
+    return sum(keepers)
 
 
 def captcha_halfway_round(number):
@@ -34,26 +27,15 @@ def captcha_halfway_round(number):
     characters = [character for character in str(number)]
     sentinal = int(len(characters) / 2)
 
-    offsets = [get_nth_cycled_item(characters, index+sentinal) for index, _ in enumerate(characters)]
-    # print(characters)
-    # print(offsets)
-    keepers = list()
-    for a, b in zip(characters, offsets):
-        if a == b:
-            keepers.append(int(a))
+    offsets = [characters[(index + sentinal) % len(characters)] for index, _ in enumerate(characters)]
+
+    keepers = [int(a) for a, b in zip(characters, offsets) if a == b]
 
     return sum(keepers)
-
-
-def get_nth_cycled_item(characters, sentinal):
-    library = cycle(characters)
-    for _ in range(sentinal):
-        next(library)
-    return next(library)
 
 
 if __name__ == "__main__":
     with open(r'./input/day_01.txt', 'rt') as handle:
         adventofcode = int(handle.readline())
-        print("Part One: {}".format(captcha(adventofcode)))
-        print("Part Two: {}".format(captcha_halfway_round(adventofcode)))
+        print("Part One: {}".format(captcha(adventofcode)))  # 1182
+        print("Part Two: {}".format(captcha_halfway_round(adventofcode)))  # 1152
