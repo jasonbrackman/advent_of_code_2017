@@ -11,31 +11,25 @@
 #
 # --------------------------------------------------------------------------------------
 
+from collections import deque
 
-def captcha(number):
-    characters = [character for character in str(number)]
-    if len(characters) == 1 or len(characters) == len(set(characters)):
+
+def captcha(number, rotate=-1):
+    characters = deque([character for character in str(number)])
+    if len(characters) == 1:
         return 0
 
-    offset = characters[1:] + [characters[0]]
+    offset = characters.copy()
+    offset.rotate(rotate)
     keepers = [int(a) for a, b in zip(characters, offset) if a == b]
-    return sum(keepers)
-
-
-def captcha_halfway_round(number):
-
-    characters = [character for character in str(number)]
-    sentinal = int(len(characters) / 2)
-
-    offsets = [characters[(index + sentinal) % len(characters)] for index, _ in enumerate(characters)]
-
-    keepers = [int(a) for a, b in zip(characters, offsets) if a == b]
 
     return sum(keepers)
 
 
 if __name__ == "__main__":
     with open(r'./input/day_01.txt', 'rt') as handle:
-        adventofcode = int(handle.readline())
-        print("Part One: {}".format(captcha(adventofcode)))  # 1182
-        print("Part Two: {}".format(captcha_halfway_round(adventofcode)))  # 1152
+        text_ = handle.readline()
+        int_ = int(text_)
+        halfway = len(text_) // 2
+        print("Part One: {}".format(captcha(int_)))  # 1182
+        print("Part Two: {}".format(captcha(int_, rotate=halfway)))  # 1152
