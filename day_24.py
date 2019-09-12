@@ -10,12 +10,12 @@ def get_input():
 
     return lines
 
+
 tChain = list()
 
+
 def generate_chains(links, input_='0'):
-    temp = [x for x in links if x not in tChain]
-    options = [item for item in temp if input_ in item]
-    return options
+    return [x for x in links if input_ in x and x not in tChain]
 
 
 def test(links, input='0', index=0):
@@ -27,11 +27,9 @@ def test(links, input='0', index=0):
         yield tChain
         tChain = tChain[0:index-1]
 
-    temp = links[:]
     index_more = index + 1
 
     for chain in chains:
-        temp.remove(chain)
         temp_input = chain[1] if input != chain[1] else chain[0]
 
         tChain = tChain[0:index_more-1]
@@ -40,20 +38,25 @@ def test(links, input='0', index=0):
         yield from test(links, input=temp_input, index=index_more)
 
 
-if __name__ == "__main__":
+def main():
     links = get_input()
     nested = test(links, input='0')
-
     lengths = list()
     sums = list()
     for nest in nested:
         flattened = [int(i) for n in nest for i in n]
         lengths.append(flattened)
         r = sum(flattened)
-        # if r > 1911:        # 1911 is too low
-        #     print(r, nest)
         sums.append(r)
-
     print("Part One:", max(sums))  # 2006
     print("Part Two:", sum(sorted(lengths, key=len)[-1]))  # 1994
 
+
+if __name__ == "__main__":
+    # import cProfile
+    # cProfile.run("main()")
+
+    main()
+
+    # import timeit
+    # print(timeit.timeit(lambda: main(), number=2))
