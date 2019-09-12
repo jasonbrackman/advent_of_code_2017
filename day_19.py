@@ -1,9 +1,7 @@
 def get_col(lines, c):
     column = []
     for row in range(len(lines)):
-        for col in range(len(lines[row])):
-            if col == c:
-                column.append(lines[row][col])
+        column.append(lines[row][c])
     return column
 
 
@@ -14,7 +12,7 @@ def get_input():
     return test_input
 
 
-if __name__ == "__main__":
+def main():
     test_input = """         |          
          |  +--+    
          A  |  C    
@@ -22,14 +20,12 @@ if __name__ == "__main__":
          |  |  |  D 
          +B-+  +--+ 
     """.split('\n')
-
     test_input = get_input()
     steps = 0
     row = 0
     col = test_input[0].find('|')
     letters = list()
     go = 'down'
-
     row_work = False
     col_work = True
     while True:
@@ -40,7 +36,7 @@ if __name__ == "__main__":
             char = cols[row]
 
             if go == 'undetermined':
-                if row-1 >= 0 and cols[row-1] != ' ':
+                if row - 1 >= 0 and cols[row - 1] != ' ':
 
                     go = 'up'
                     row -= 1
@@ -76,7 +72,7 @@ if __name__ == "__main__":
             char = rows[col]
 
             if go == 'undetermined':
-                if col-1 >= 0 and rows[col-1] != ' ':
+                if col - 1 >= 0 and rows[col - 1] != ' ':
                     go = 'left'
                     col -= 1
                     steps += 1
@@ -104,8 +100,13 @@ if __name__ == "__main__":
                 col_work = True
                 row_work = False
                 go = 'undetermined'
+    print('Part One: ', "".join(letters))  # EPYDUXANIT
+    print('Part Two: ', steps)  # 17544
 
-    print('Part One: ', "".join(letters)) # EPYDUXANIT
-    print('Part Two: ', steps)
+
+if __name__ == "__main__":
+    # import cProfile
+    # cProfile.run("main()")
+    main()
 
 
